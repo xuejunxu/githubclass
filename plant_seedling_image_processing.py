@@ -42,4 +42,5 @@ cv2.waitKey(0)
 
 #change the image files in image_per_class into a numpy.array format
 #for keys in image_per_class[keys]:
+
     
