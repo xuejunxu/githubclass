@@ -248,7 +248,7 @@ for image in test_set:
     species=label_return (pre_species)
     species_array=num_to_array(pre_species)
     pred_y.append(species_array)
-    openfile.write(file_name+','+species+'\n')6
+    openfile.write(file_name+','+species+'\n')
 openfile.close()
 
 print(pred_y)
