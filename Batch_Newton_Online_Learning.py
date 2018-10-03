@@ -74,10 +74,6 @@ def g(size,train,theta): # g is row column vector
 	theta_k-1 are the k-th iteration for theta
 	"""
 	sum_g=numpy.zeros((19,1))
-	#print(sum_g.shape)
-	# print('sum shape g')
-	# print(sum_g.shape)
-	# print(sum_g)
 	for i in range(size):
 		#L_i=L(train[i][0],train[i][1],theta)
 		#par_der=numpy.diff(L_i,theta_k_1)
@@ -101,7 +97,6 @@ def H(size,theta_k_1,x): #size is the train size
 	#s1=(19,19)
 	sum_h = numpy.zeros((19,19))
 	# print(sum_h.shape)
-
 	# print('sum size')
 	#print(sum_h.size)
 	for p in range(size):
@@ -114,19 +109,10 @@ def H(size,theta_k_1,x): #size is the train size
 		# print(h1_i.shape)
 		#h1_i=1.71*0.66*(1-(numpy.tanh(0.66*numpy.dot(theta_k_1,x[p][0])))**2)*x[p][0] #row vector
 		h1_i=numpy.array(h1_i)
-		# print('h1_i shape is')
-		# print(h1_i.shape)
-		#print(h1_i)
 		h2_i=h1_i.transpose()
-		#h2_i=numpy.transpose(h1_i) # h2_i is a column vector
-		# print(h2_i.shape)
-		# print('h2_i shape is')
-		#print(h2_i.shape)
+
 		h_i=numpy.multiply(numpy.array(h2_i),numpy.array(h1_i))
-		#print(h_i.shape)
-		# print(h1_i.shape)
-		# print(h2_i.shape)
-		# print(h_i.shape)
+
 		sum_h=sum_h+h_i
 	return sum_h #19*19 matrix
 
@@ -135,35 +121,21 @@ def iteration(theta,size,train):
 	#train_x=[item[0] for item in train_xy]
 	#train_y=[item[1] for item in train_xy]
 	diff_norm=numpy.linalg.norm(theta)
-	#print('diff of norm')
-	#print(diff_norm)
+
 	while diff_norm>=(0.01/size):
 		#the_norm=numpy.linalg.norm(theta)
 		#diff_of_norm=diff_norm-the_norm
-		#print(diff_norm)
-		# h_ini=H(size,theta,train)
-		# print('h_ini is')
-		# print(h_ini.shape)
+
 		try:
 		    H_inv=numpy.linalg.inv(H(size,theta,train))
-		    # print('Hinv shape:')
 
-		    # print(H_inv.shape)
-		    #print(H_inv)
-		    #print(H_inv)
 		except numpy.linalg.LinAlgError:# Not invertible. Skip this one.
 		    pass
 		else:
-			#print((g(size,train,theta)).shape)
 			gi=g(size,train,theta)
 			hinv_g=numpy.dot(numpy.array(H_inv),numpy.array(gi))
-			# print('hinvg dim')
-			# print(hinv_g.shape)
-			# print(theta.shape)
-			# #theta=theta-H_inv*g(size,train,theta)
-			# print('theta')
-			# print(theta.shape)
-			# print(hinv_g.shape)
+			# theta=theta-H_inv*g(size,train,theta)
+
 			theta=theta-hinv_g
 			# print(theta.shape)
 			the_norm=(numpy.linalg.norm(theta))
@@ -172,31 +144,30 @@ def iteration(theta,size,train):
 	return theta
 
 #Online algorithm
-###not finished yet
+
 def learn_alg(size,x,y,theta,scal_mat): #x is row vector
 	for t in range(size):
 		scalar=max(20,t-40)
 		L_dtheta=numpy.diff(L(x[t],y[t],theta))
-		scal_mat_inv=numpy.linalg.inv(scal_mat)
-		h1_t=sympy.diff(f(theta_k_1*x[p]),theta_k_1)
-		h2_t=h1_t.transpose()
-		h_t=h1_t*h2_t
-		scal_mat1=(1-2/scalar)*scal_mat_inv+(2/scalar)*h_t
-		scal_mat=numpy.linalg.inv(scal_mat1)
-		theta=theta-1/scalar*scal_mat*L_dtheta
+		try:
+			scal_mat_inv=numpy.linalg.inv(scal_mat)
+		except numpy.linalg.LinAlgError:# Not invertible. Skip this one.
+			pass
+		else:
+		    #scal_mat_inv=numpy.linalg.inv(scal_mat)
+		    h1_t=sympy.diff(f(theta_k_1*x[p]),theta_k_1)
+		    h2_t=h1_t.transpose()
+		    h_t=h1_t*h2_t
+		    scal_mat1=(1-2/scalar)*scal_mat_inv+(2/scalar)*h_t
+		    scal_mat=numpy.linalg.inv(scal_mat1)
+		    theta=theta-1/scalar*scal_mat*L_dtheta
+		return theta
 
 theta_test=numpy.random.uniform(-0.5,0.5,19)
 #print(theta_test)
 theta_test_t=numpy.array(theta_test)[numpy.newaxis]
 theta_test1=theta_test_t.transpose() #theta is column vector
-#print(theta_test1.shape)
-#print(numpy.dot(theta_test1,theta_test))
-# testing=H(100,theta_test1,train_xy)
-# print(testing)
 
-# test_g=g(200,train_xy,theta_test1)
-# print(test_g)
-#print(test_g.shape)
 iteration(theta_test1,100,per1)
 print(iteration(theta_test1,100,per1))
 # print('theta equals')
@@ -204,10 +175,3 @@ print(iteration(theta_test1,100,per1))
 
 def run_iter_diffsize(size,x,y,theta):
 	iteration(theta_test1,size,train_xy)
-
-#print(test_g)
-# testing=H(1000,theta_test1,train_xy)
-# print('H is:')
-# print(testing.shape)
-
-#print(per1)
